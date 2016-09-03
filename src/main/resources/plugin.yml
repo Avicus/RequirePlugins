@@ -1,0 +1,6 @@
+name: ${plugin.name}
+description: ${project.description}
+main: ${plugin.mainClass}
+version: ${project.version}
+authors: [The Avicus Network]
+website: https://github.com/Avicus/RequirePlugins

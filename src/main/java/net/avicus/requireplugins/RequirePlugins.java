@@ -7,10 +7,13 @@ import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class RequirePlugins extends JavaPlugin {
+    private static final Joiner COMMAS = Joiner.on(", ");
+
     @Override
     public void onEnable() {
         getConfig().options().copyDefaults(true);
@@ -24,16 +27,23 @@ public class RequirePlugins extends JavaPlugin {
         }
 
         getServer().getScheduler().runTask(this, () -> {
-            List<String> missing = required.stream()
-                    .filter(name -> !hasPlugin(name))
+            List<String> met = required.stream()
+                    .filter(this::hasPlugin)
                     .collect(Collectors.toList());
 
-            if (missing.isEmpty()) {
-                log(ChatColor.GREEN + "All plugin requirements are met!");
+            String metString = COMMAS.join(met);
+            log(ChatColor.GREEN + String.format("Requirements met (%d): %s", met.size(), metString));
+
+            if (met.size() == required.size()) {
+                log(ChatColor.GREEN + "All requirements met!");
             }
             else {
-                String missingString = Joiner.on(", ").join(missing);
-                log(ChatColor.RED + String.format("Missing %d plugins: %s", missing.size(), missingString));
+                List<String> missing = new ArrayList<>(required);
+                missing.removeAll(met);
+
+                String missingString = COMMAS.join(missing);
+
+                log(ChatColor.RED + String.format("Missing plugins (%d): %s", missing.size(), missingString));
                 shutdown();
             }
         });

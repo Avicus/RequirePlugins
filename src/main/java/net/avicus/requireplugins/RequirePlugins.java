@@ -32,7 +32,7 @@ public class RequirePlugins extends JavaPlugin {
                     .collect(Collectors.toList());
 
             String metString = COMMAS.join(met);
-            log(ChatColor.GREEN + String.format("Requirements met (%d): %s", met.size(), metString));
+            log(ChatColor.GREEN + String.format("Requirements met (%d/%d): %s", met.size(), required.size(), metString));
 
             if (met.size() == required.size()) {
                 log(ChatColor.GREEN + "All requirements met!");
